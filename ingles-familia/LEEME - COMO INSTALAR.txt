@@ -1,0 +1,170 @@
+==============================================================
+   INGLÉS EN FAMILIA — Cómo instalarla en los teléfonos
+   (uso personal / doméstico)
+==============================================================
+
+QUÉ ES
+------
+Una app tipo Duolingo para aprender a HABLAR inglés, por niveles
+(A1 Principiante → A2 Básico → B1 Intermedio → B2 Intermedio alto).
+Reúne lo mejor de las apps que te gustan:
+
+  • Ruta de lecciones por niveles con XP, racha y meta diaria (Duolingo)
+  • Pronunciación evaluada palabra por palabra + laboratorio de los
+    10 sonidos difíciles para hispanohablantes (estilo ELSA)
+  • Juegos de rol con avatar que te habla y te pide responder (Speak / Praktika)
+  • Tutor de IA para conversación libre por voz, con correcciones (Speak / TalkPal / Gliglish)
+  • Guía gramatical en español en cada unidad (Babbel)
+  • Liga familiar semanal para motivarse entre todos
+
+20 unidades, 120 lecciones, 200 palabras, 160 frases, 20 diálogos.
+
+
+NUEVO EN v1.1 — MÓDULO TUTOR (estilo Learna)
+--------------------------------------------
+Pestaña 💬 Tutor: todo ocurre en un chat con Emma, pero con la
+lógica de Duolingo (sigue tu unidad, da XP, cuenta para la racha,
+la meta diaria y el repaso).
+
+ • Clase de hoy (SIN clave de IA, ~6 min): Emma te enseña 4
+   palabras de tu unidad actual (prioriza las que menos sabes),
+   te hace un mini quiz, te pide leer frases en voz alta, un reto
+   de decir una frase sin leerla y un juego de rol. Al final te da
+   un puntaje y +15 XP.
+ • Clases por unidad: se desbloquean a medida que avanzas en el
+   camino (U1, U2, ...).
+ • Charla libre con IA (con clave Gemini): temas con nivel
+   recomendado, "Ideas para responder" si te quedas en blanco,
+   tarjetas de "Palabra nueva" y "Mejor di" (corrección) que
+   puedes guardar con ⭐.
+ • Mis correcciones guardadas: se convierten en una lección de
+   repaso (hablar y ordenar) para no repetir los mismos errores.
+ • Al terminar una charla: resumen con mensajes, minutos de voz,
+   correcciones y palabras nuevas.
+
+
+POR QUÉ HAY QUE "PUBLICARLA" PRIMERO
+------------------------------------
+Es una app web instalable (PWA). Chrome solo permite usar el
+micrófono e instalarla como app si se abre desde una dirección
+segura (https://). Por eso hay que subir la carpeta UNA SOLA VEZ
+a un hosting gratuito. Es gratis y toma unos 5 minutos.
+Después cada teléfono la instala con un toque y queda con su ícono,
+igual que una app de la Play Store.
+
+
+PASO 1 — PUBLICARLA (una sola vez, desde la computadora)
+-------------------------------------------------------
+Opción recomendada: Netlify (gratis)
+
+ 1. Descomprime este zip. Te queda la carpeta "ingles-familia".
+ 2. Entra a:  https://app.netlify.com/signup  y crea una cuenta
+    gratis (puedes entrar con tu cuenta de Google).
+    ⚠️ Crea la cuenta ANTES de subirla: si la subes sin cuenta,
+    Netlify la borra a la hora.
+ 3. Ya dentro, ve a:  https://app.netlify.com/drop
+ 4. ARRASTRA la carpeta "ingles-familia" completa al recuadro.
+ 5. En unos segundos te da un enlace tipo:
+        https://nombre-raro-123.netlify.app
+ 6. (Opcional) Para un nombre fácil: Site configuration →
+    Change site name → por ejemplo "ingles-familia-anthony".
+    Quedaría:  https://ingles-familia-anthony.netlify.app
+
+Opción alternativa: GitHub Pages (si tienes cuenta de GitHub):
+crea un repositorio, sube el contenido de la carpeta, y en
+Settings → Pages elige la rama "main". Te da https://usuario.github.io/repo
+
+
+PASO 2 — INSTALARLA EN CADA TELÉFONO (Android)
+---------------------------------------------
+ 1. Manda el enlace por WhatsApp a tu esposa, hijo e hija.
+ 2. Ábranlo en GOOGLE CHROME (no en el navegador de WhatsApp:
+    toquen los 3 puntos → "Abrir en Chrome").
+ 3. En Chrome: menú ⋮ → "Instalar app" o "Agregar a pantalla principal".
+ 4. Aparece el ícono "Inglés Familia" en el teléfono. ¡Listo!
+ 5. La primera vez que toquen el micrófono, Chrome pregunta
+    por el permiso → "Permitir".
+
+iPhone: abrir el enlace en Safari → botón Compartir → "Agregar a
+inicio". (El reconocimiento de voz en iPhone puede ser menos
+estable; si falla, la app cambia sola los ejercicios de voz por
+ejercicios de ordenar frases.)
+
+
+PASO 3 — PRIMER USO
+-------------------
+ • Cada uno crea su perfil (nombre, avatar, meta diaria).
+ • "Empiezo desde cero" o "Prueba de nivel" (3 min, los ubica en
+   A1, A2, B1 o B2).
+ • Si alguien ya sabe, en cada nivel hay un botón
+   "Examen para saltar".
+ • En un mismo teléfono puede haber varios perfiles
+   (Familia → Agregar persona).
+
+
+TUTOR DE IA (opcional, gratis)
+------------------------------
+Las lecciones y juegos de rol funcionan SIN esto. El tutor de IA
+agrega conversación libre por voz sobre cualquier tema (café,
+aeropuerto, médico, entrevista, negociar con proveedor, colegio...).
+
+ 1. Entra a  https://aistudio.google.com  con tu cuenta de Google.
+ 2. "Get API key" → "Create API key". Copia la clave (empieza con AIza...).
+ 3. En la app: Perfil → Tutor de IA → pega la clave → Guardar →
+    Probar conexión.
+ 4. Puedes usar la MISMA clave en los 4 teléfonos.
+ El plan gratis de Google tiene un límite diario de mensajes,
+ suficiente para practicar en familia.
+ También acepta DeepSeek, Groq, OpenRouter u otro compatible.
+
+
+LIGA FAMILIAR
+-------------
+Cada quien usa su teléfono, así que la liga funciona con códigos:
+Familia → "Compartir mi progreso" → se manda por WhatsApp →
+el otro lo pega en "Agregar código de un familiar".
+Se reinicia cada lunes.
+
+
+QUÉ NECESITA INTERNET
+---------------------
+ • Reconocimiento de voz (lo hace Google en Chrome): SÍ
+ • Tutor de IA: SÍ
+ • Lecciones, ejercicios de escuchar y leer, guías: NO (después de
+   abrirla una vez con internet funciona sin conexión)
+
+
+DÓNDE SE GUARDA EL PROGRESO
+---------------------------
+En cada teléfono (no hay servidor ni cuentas). Si van a borrar los
+datos de Chrome o cambiar de teléfono: Perfil → Respaldo →
+"Descargar respaldo", y luego "Restaurar" en el teléfono nuevo.
+
+
+ACTUALIZAR LA APP
+-----------------
+Si cambias algo (o te paso una versión nueva), en Netlify entras a
+tu sitio → Deploys → arrastras la carpeta otra vez (si ya subiste
+la v1.0, haz esto con la v1.1). Los teléfonos
+se actualizan solos al abrir la app con internet. El progreso no
+se pierde.
+
+
+PERSONALIZAR EL CONTENIDO
+-------------------------
+Todo el curso está en  js/content.js  (palabras, frases, guías y
+diálogos de cada unidad). Puedes editarlo con VS Code siguiendo el
+mismo formato y volver a subir la carpeta.
+
+
+LÍMITES HONESTOS
+----------------
+ • La pronunciación se evalúa por PALABRAS (lo que el reconocedor
+   de Google entendió) y con consejos sobre los sonidos típicos, no
+   sonido por sonido como hace ELSA con su IA propia.
+ • Los avatares son ilustraciones animadas, no video como Praktika.
+ • No hay tutores humanos (Cambly). Si más adelante quieren pulir,
+   una clase humana de vez en cuando complementa muy bien.
+
+La regla de oro: 10 minutos de hablar en voz alta TODOS los días,
+aceptando equivocarse. Eso es lo que más rápido da resultados.
