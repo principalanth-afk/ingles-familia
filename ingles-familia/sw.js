@@ -1,7 +1,7 @@
 /* Service worker: permite abrir la app sin internet (las lecciones funcionan offline;
    el reconocimiento de voz y el tutor de IA sí necesitan conexión). */
-const CACHE = 'ingles-familia-v2';
-const FILES = ['./', 'index.html', 'styles.css', 'js/content.js', 'js/speech.js', 'js/app.js', 'js/tutor.js', 'manifest.webmanifest',
+const CACHE = 'ingles-familia-v3';
+const FILES = ['./', 'index.html', 'styles.css', 'js/content.js', 'js/phrasebook.js', 'js/speech.js', 'js/app.js', 'js/tutor.js', 'js/zahra.js', 'js/news.js', 'manifest.webmanifest',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/maskable-512.png'];
 
 self.addEventListener('install', e => {
@@ -14,7 +14,7 @@ self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
   if (e.request.method !== 'GET') return;
   // APIs de IA: siempre por red
-  if (/generativelanguage|deepseek|openrouter|groq/.test(url.hostname)) return;
+  if (/generativelanguage|deepseek|openrouter|groq|mymemory|rss2json|allorigins|codetabs|bbci|npr/.test(url.hostname)) return;
   // Fuentes de Google: cache con actualización
   if (/fonts\.(googleapis|gstatic)\.com/.test(url.hostname)) {
     e.respondWith(caches.open(CACHE).then(async c => {

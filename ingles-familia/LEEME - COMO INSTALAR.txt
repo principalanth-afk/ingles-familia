@@ -20,27 +20,48 @@ Reúne lo mejor de las apps que te gustan:
 20 unidades, 120 lecciones, 200 palabras, 160 frases, 20 diálogos.
 
 
-NUEVO EN v1.1 — MÓDULO TUTOR (estilo Learna)
---------------------------------------------
-Pestaña 💬 Tutor: todo ocurre en un chat con Emma, pero con la
-lógica de Duolingo (sigue tu unidad, da XP, cuenta para la racha,
-la meta diaria y el repaso).
+NUEVO EN v1.2 — DOS MODOS + ZAHRA
+---------------------------------
+Arriba de la app hay un interruptor siempre visible:
 
- • Clase de hoy (SIN clave de IA, ~6 min): Emma te enseña 4
-   palabras de tu unidad actual (prioriza las que menos sabes),
-   te hace un mini quiz, te pide leer frases en voz alta, un reto
-   de decir una frase sin leerla y un juego de rol. Al final te da
-   un puntaje y +15 XP.
- • Clases por unidad: se desbloquean a medida que avanzas en el
-   camino (U1, U2, ...).
- • Charla libre con IA (con clave Gemini): temas con nivel
-   recomendado, "Ideas para responder" si te quedas en blanco,
-   tarjetas de "Palabra nueva" y "Mejor di" (corrección) que
-   puedes guardar con ⭐.
- • Mis correcciones guardadas: se convierten en una lección de
-   repaso (hablar y ordenar) para no repetir los mismos errores.
- • Al terminar una charla: resumen con mensajes, minutos de voz,
-   correcciones y palabras nuevas.
+ ⭐ MODO LECCIONES (tipo Duolingo)
+    Aprender (camino A1→B2) · Pronuncia · Diálogos · Familia · Perfil
+
+ 🤖 MODO ZAHRA (tipo Learna) — Zahra es una robot tutora
+    • Zahra: chat libre. Pregúntale "¿cómo se dice...?",
+      "¿cómo se pronuncia...?" o "¿qué significa...?", escribiendo
+      o por voz. Toca la bandera 🇪🇸/🇺🇸 para elegir en qué idioma
+      le hablas al micrófono. Te da la frase, el audio (normal y
+      lento 🐢), cómo suena, y con "🎤 Dilo tú" te corrige palabra
+      por palabra. Guarda frases con ⭐.
+    • Clases: clase diaria guiada, frasario (355 frases),
+      conversaciones con IA por temas, repaso de tus frases.
+    • Noticias: noticias reales de hoy (BBC, NPR). Escúchalas,
+      toca cualquier palabra para traducirla, léelas en voz alta
+      y, con IA, Zahra te las explica a tu nivel con preguntas.
+    • Familia y Perfil.
+
+ 🏠 Cotidiano / 💼 Trabajo: selector en Zahra, Clases y Noticias.
+    Cambia las frases, los temas de conversación y las noticias
+    (trabajo = reuniones, llamadas, correos, negociación,
+    importación, maquinaria, agro, atención al cliente...).
+
+ Cada perfil recuerda su modo. Todo da XP para la racha y la liga.
+
+ Sin clave de IA, Zahra responde con el frasario y el curso, y
+ usa un traductor gratuito para lo demás. Con la clave de Gemini
+ da la forma más natural, alternativas, cómo suena y conversa.
+
+
+ACTUALIZAR DESDE GITHUB (si ya la tienes publicada)
+--------------------------------------------------
+ 1. En tu repositorio, entra a la carpeta "ingles-familia".
+ 2. Add file → Upload files.
+ 3. Arrastra TODO el contenido de la carpeta ingles-familia nueva
+    (incluidas las carpetas js e icons). Los archivos con el mismo
+    nombre se reemplazan.
+ 4. Commit changes. En 1-2 minutos los teléfonos se actualizan
+    al abrir la app con internet (a veces hay que abrirla 2 veces).
 
 
 POR QUÉ HAY QUE "PUBLICARLA" PRIMERO

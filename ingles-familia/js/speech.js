@@ -49,12 +49,12 @@ const Speech = (() => {
 
   function supported() { return !!SR; }
 
-  function listen({ onInterim, onResult, onError, onEnd }) {
+  function listen({ onInterim, onResult, onError, onEnd, lang }) {
     if (!SR) { onError && onError('unsupported'); return; }
     if (synth) synth.cancel();
     stop();
     rec = new SR();
-    rec.lang = 'en-US';
+    rec.lang = lang || 'en-US';
     rec.interimResults = true;
     rec.maxAlternatives = 5;
     rec.continuous = false;

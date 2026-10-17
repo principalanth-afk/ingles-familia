@@ -1,11 +1,19 @@
 /* =========================================================
-   MÓDULO TUTOR — estilo Learna (todo en un chat con Emma)
+   MÓDULO TUTOR — estilo Learna (todo en un chat con Zahra)
    pero con la lógica de Duolingo: sigue tu nivel y tu unidad,
    da XP, cuenta para la racha, la meta diaria y el repaso.
    ========================================================= */
 'use strict';
 
-const SC_LEVEL = { free: 'A1', cafe: 'A1', school: 'A1', hotel: 'A2', airport: 'A2', doctor: 'A2', interview: 'B1', supplier: 'B1' };
+const SC_LEVEL = { free: 'A1', cafe: 'A1', school: 'A1', hotel: 'A2', airport: 'A2', doctor: 'A2', interview: 'B1', supplier: 'B1',
+  meeting: 'B1', call: 'A2', customer: 'A2', present: 'B1', worktalk: 'A2', email: 'B1' };
+const scopeText = p => (p.scope === 'work'
+  ? 'WORK / BUSINESS English: meetings, calls, emails, negotiation, importing machinery, customer service. Offer a professional tone.'
+  : 'EVERYDAY English: family, home, school, food, shopping, travel, friends. Natural, casual tone.');
+function scopeSwitch(p) {
+  return `<div class="scopebar"><button data-scope="daily" class="${(p.scope || 'daily') === 'daily' ? 'on' : ''}">🏠 Cotidiano</button><button data-scope="work" class="${p.scope === 'work' ? 'on' : ''}">💼 Trabajo</button></div>`;
+}
+function wireScope(c, p) { $$('[data-scope]', c).forEach(b => b.onclick = () => { p.scope = b.dataset.scope; save(); renderMain(); }); }
 const lvIdx = id => LEVELS.findIndex(l => l.id === id);
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 function ensureTutor(p) { p.saved = p.saved || []; p.tutor = p.tutor || {}; return p; }
@@ -20,10 +28,12 @@ function viewTutor(c, p) {
   const mins = (p.speak[dayKey()] || 0) / 60;
   const hasAI = !!DB.settings.ai.key;
   const lv = currentLevel(p);
-  const scs = SCENARIOS.slice().sort((a, b) => lvIdx(SC_LEVEL[a.id] || 'A1') - lvIdx(SC_LEVEL[b.id] || 'A1'));
+  const scope = p.scope || 'daily';
+  const scs = SCENARIOS.filter(s => (s.scope || 'daily') === scope || s.id === 'free').sort((a, b) => lvIdx(SC_LEVEL[a.id] || 'A1') - lvIdx(SC_LEVEL[b.id] || 'A1'));
+  const books = PHRASEBOOK.filter(b => b.scope === scope);
   c.innerHTML = `
   <div class="hero">
-    <div class="avatar-wrap hero-av">${avatarSVG('emma')}</div>
+    <div class="avatar-wrap hero-av">${avatarSVG()}</div>
     <div style="flex:1;min-width:0">
       <div class="hero-say">${esc(greet(p))} ${doneToday ? 'Great job today! 🎉' : 'Ready to talk? 😊'}</div>
       <div class="hero-meta">🎤 ${mins.toFixed(1)} / 10 min de voz hoy</div>
@@ -32,7 +42,7 @@ function viewTutor(c, p) {
   </div>
 
   <div class="card today">
-    <div class="tag">💬 CLASE DE HOY CON EMMA</div>
+    <div class="tag">💬 CLASE DE HOY CON ZAHRA</div>
     <div class="row" style="margin-top:6px"><span style="font-size:40px">${u.icon}</span>
       <div style="flex:1"><b style="font-size:18px">${esc(u.title)}</b><br><small class="muted">Unidad ${unitIndex(u.id) + 1} · ${u.level} · ~6 min · palabras, quiz, voz y juego de rol</small></div>
       ${p.tutor[u.id] != null ? `<span class="badge g">${p.tutor[u.id]}%</span>` : ''}</div>
@@ -40,15 +50,19 @@ function viewTutor(c, p) {
     ${doneToday ? '' : `<small class="muted" style="display:block;margin-top:8px">+15 XP · sigue la misma unidad de tu camino ⭐</small>`}
   </div>
 
-  <h2 style="margin-top:20px">🤖 Charla libre con Emma</h2>
+  <div style="margin-top:18px">${scopeSwitch(p)}</div>
+  <h2 style="margin-top:14px">📖 Frasario ${scope === 'work' ? 'de trabajo' : 'cotidiano'}</h2>
+  <p class="muted" style="margin-top:0">${books.reduce((a, b) => a + b.items.length, 0)} frases listas para usar. Escúchalas, dilas y practícalas como lección.</p>
+  <div class="topic-grid">${books.map(b => `<button class="topic" data-book="${b.id}"><span class="ic">${b.icon}</span><b>${esc(b.title)}</b><small>${b.items.length} frases${p.books && p.books[b.id] != null ? ' · ' + p.books[b.id] + '%' : ''}</small></button>`).join('')}</div>
+  <h2 style="margin-top:20px">🗣️ Conversar con Zahra (IA)</h2>
   ${hasAI ? `<p class="muted" style="margin-top:0">Habla de lo que quieras. Te sugiere respuestas, te enseña palabras y guarda tus correcciones.</p>
     <div class="topic-grid">${scs.map(s => { const sl = SC_LEVEL[s.id] || 'A1'; const above = lvIdx(sl) > lvIdx(lv);
       return `<button class="topic ${above ? 'above' : ''}" data-sc="${s.id}"><span class="ic">${s.icon}</span><b>${esc(s.title)}</b><small>${esc(s.desc)}</small><span class="lvb" style="background:${LEVEL[sl].color}">${sl}${above ? ' · reto' : ''}</span></button>`; }).join('')}</div>`
-  : `<div class="notice"><b>Actívala gratis en 3 minutos</b><br>Con una clave gratuita de Google Gemini, Emma conversa contigo por voz sobre cualquier tema. La clase diaria de arriba funciona sin clave.
+  : `<div class="notice"><b>Actívala gratis en 3 minutos</b><br>Con una clave gratuita de Google Gemini, Zahra conversa contigo por voz sobre cualquier tema. La clase diaria de arriba funciona sin clave.
       <button class="btn small" id="setai" style="margin-top:10px">Configurar tutor</button></div>`}
 
   <div class="card" style="margin-top:16px">
-    <div class="row"><span style="font-size:28px">⭐</span><div style="flex:1"><b>Mis correcciones guardadas</b><br><small class="muted">${p.saved.length ? p.saved.length + ' frases para repasar' : 'Cuando Emma te corrija, toca ⭐ Guardar'}</small></div></div>
+    <div class="row"><span style="font-size:28px">⭐</span><div style="flex:1"><b>Mis correcciones guardadas</b><br><small class="muted">${p.saved.length ? p.saved.length + ' frases para repasar' : 'Cuando Zahra te corrija, toca ⭐ Guardar'}</small></div></div>
     ${p.saved.length ? `<div class="row" style="margin-top:10px"><button class="btn small" id="rev" ${p.saved.length < 3 ? 'disabled' : ''}>Repasar</button><button class="btn ghost small" id="seesaved">Ver lista</button></div>` : ''}
   </div>
 
@@ -62,12 +76,14 @@ function viewTutor(c, p) {
       `<button class="list-item" data-dl="${x.id}"><span class="ic">${x.icon}</span><span class="t"><b>${esc(x.dialogue.title)}</b><small>${esc(x.dialogue.scene)}</small></span>›</button>`).join('')).join('')}
   </details>`;
   $('#today', c).onclick = () => startGuidedChat(u);
+  wireScope(c, p);
+  $$('[data-book]', c).forEach(b => b.onclick = () => showBook(PHRASEBOOK.find(x => x.id === b.dataset.book)));
   $$('[data-gu]', c).forEach(b => b.onclick = () => {
     if (b.classList.contains('locked')) return toast('🔒 Avanza en el camino para desbloquear esta clase');
     startGuidedChat(UNITS.find(x => x.id === b.dataset.gu));
   });
   $$('[data-sc]', c).forEach(b => b.onclick = () => startChat(SCENARIOS.find(s => s.id === b.dataset.sc)));
-  $$('[data-dl]', c).forEach(b => b.onclick = () => startDialogue(UNITS.find(x => x.id === b.dataset.dl), { xp: 10, onDone: () => { TAB = 'talk'; } }));
+  $$('[data-dl]', c).forEach(b => b.onclick = () => startDialogue(UNITS.find(x => x.id === b.dataset.dl), { xp: 10 }));
   const s = $('#setai', c); if (s) s.onclick = () => { TAB = 'me'; renderMain(); setTimeout(() => $('#aisec') && $('#aisec').scrollIntoView({ behavior: 'smooth' }), 50); };
   const r = $('#rev', c); if (r) r.onclick = startSavedReview;
   const sv = $('#seesaved', c); if (sv) sv.onclick = showSaved;
@@ -77,8 +93,8 @@ function viewTutor(c, p) {
 function chatShell(title, subtitle) {
   app.innerHTML = `<div class="screen" style="height:100dvh">
     <div class="lesson-top" style="border-bottom:2px solid var(--line)"><button class="x" id="quit">✕</button>
-      <div class="avatar-wrap" style="width:46px;height:46px;flex:none">${avatarSVG('emma').replace('class="avatar"', 'class="avatar" style="width:46px;height:46px"')}</div>
-      <div style="flex:1;min-width:0"><b>Emma</b><br><small class="muted">${subtitle}</small></div>
+      <div class="avatar-wrap" style="width:46px;height:46px;flex:none">${avatarSVG().replace('class="avatar"', 'class="avatar" style="width:46px;height:46px"')}</div>
+      <div style="flex:1;min-width:0"><b>Zahra 🤖</b><br><small class="muted">${subtitle}</small></div>
       <button class="chip" id="trt" title="Traducción">🇪🇸</button><button class="chip" id="spk" title="Voz automática">🔊</button></div>
     <div class="pbar thin hidden" id="cpb"><div style="width:0%"></div></div>
     <div class="chat" id="chat"></div>
@@ -192,8 +208,8 @@ function startGuidedChat(u) {
   let st = 0; const tick = () => K.progress(++st / steps);
   $('#quit').onclick = () => {
     modal(`<div class="center">${MASCOT}<h2>¿Salir de la clase?</h2><p class="muted">Perderás el progreso de esta clase.</p>
-      <button class="btn" data-k>Seguir con Emma</button><button class="link" data-q style="width:100%;color:var(--bad)">Salir</button></div>`, (m, close) => {
-      $('[data-k]', m).onclick = close; $('[data-q]', m).onclick = () => { close(); K.closed = true; Speech.stop(); if (window.speechSynthesis) speechSynthesis.cancel(); TAB = 'talk'; renderMain(); };
+      <button class="btn" data-k>Seguir con Zahra</button><button class="link" data-q style="width:100%;color:var(--bad)">Salir</button></div>`, (m, close) => {
+      $('[data-k]', m).onclick = close; $('[data-q]', m).onclick = () => { close(); K.closed = true; Speech.stop(); if (window.speechSynthesis) speechSynthesis.cancel(); TAB = 'classes'; renderMain(); };
     });
   };
   const ws = unitWords(u), ps = unitPhrases(u);
@@ -264,14 +280,15 @@ function startGuidedChat(u) {
     K.closed = true;
     if (go.startsWith('Ir')) { TAB = 'learn'; renderMain(); }
     else if (go.startsWith('Charla')) startChat(SCENARIOS[0]);
-    else { TAB = 'talk'; renderMain(); }
+    else { TAB = 'classes'; renderMain(); }
   })();
 }
 
 /* ======================= CHARLA LIBRE CON IA ======================= */
 function systemPrompt(sc) {
   const p = P(), lv = currentLevel(p);
-  return `You are "Emma", a warm, patient and fun English conversation tutor inside a family app. The learner (${p.name}) is a native Spanish speaker from Venezuela. Learner's CEFR level: ${lv} (${LEVEL[lv].name}).
+  return `You are "Zahra", a friendly robot English tutor inside a family app (cheerful, patient, fluent in American English and Venezuelan Spanish). The learner (${p.name}) is a native Spanish speaker from Venezuela. Learner's CEFR level: ${lv} (${LEVEL[lv].name}).
+Focus: ${scopeText(p)}
 Scenario: ${sc.prompt}
 Rules:
 - Write "reply" ONLY in English. Keep it short: 1 to 3 sentences (max ~35 words). Use vocabulary and grammar appropriate for ${lv}${lv === 'A1' || lv === 'A2' ? ', very simple' : ''}.
@@ -293,13 +310,13 @@ function startChat(sc) {
   K.input('free');
   const finish = () => {
     K.closed = true; Speech.stop(); if (window.speechSynthesis) speechSynthesis.cancel();
-    if (!sent) { TAB = 'talk'; return renderMain(); }
+    if (!sent) { TAB = 'classes'; return renderMain(); }
     const xp = Math.min(30, sent * 2 + saved);
     addXP(xp);
     const voice = ((p.speak[dayKey()] || 0) - speak0) / 60, mins = (Date.now() - t0) / 60000;
     showDone({ title: '¡Buena charla! 💬', xp, acc: null, time: `${Math.floor(mins)}:${pad(Math.round((mins % 1) * 60))}`,
       extra: `<div class="card" style="text-align:left;min-width:260px">💬 Mensajes: <b>${sent}</b><br>🎤 Minutos de voz: <b>${voice.toFixed(1)}</b><br>✏️ Correcciones: <b>${fixes}</b> (${saved} guardadas)<br>✨ Palabras nuevas: <b>${words}</b></div>`,
-      onBtn: () => { TAB = 'talk'; renderMain(); } });
+      onBtn: () => { TAB = 'classes'; renderMain(); } });
   };
   $('#quit').onclick = finish;
   const saveBtn = (en, es, from) => `<button class="chip-btn sm" data-save data-en="${esc(en)}" data-es="${esc(es || '')}" data-from="${esc(from || '')}">⭐ Guardar</button>`;
@@ -365,11 +382,11 @@ function startSavedReview() {
     else if (multi) { const b = G.build(it, items, true); b.es = it.es; ex.push(b); }
     else ex.push(G.speak(it));
   });
-  runLesson({ title: 'Mis correcciones', exercises: ex, xp: 10, onDone: () => { TAB = 'talk'; } });
+  runLesson({ title: 'Mis correcciones', exercises: ex, xp: 10 });
 }
 function showSaved() {
   const p = ensureTutor(P());
-  modal(`<h2>⭐ Mis correcciones</h2><p class="muted">Frases que Emma te corrigió y palabras nuevas que guardaste.</p>
+  modal(`<h2>⭐ Mis correcciones</h2><p class="muted">Frases que Zahra te corrigió y palabras nuevas que guardaste.</p>
     <table>${p.saved.map((s, i) => `<tr><td><button class="mini-aud" data-say="${esc(s.en)}" style="width:34px;height:34px;font-size:15px">🔊</button></td>
       <td><b>${esc(s.en)}</b>${s.es ? `<br><small class="muted">${esc(s.es)}</small>` : ''}${s.from && s.from !== 'palabra' ? `<br><small style="color:var(--bad)">Dijiste: ${esc(s.from)}</small>` : ''}</td>
       <td><button class="x" data-del="${i}" style="font-size:18px">✕</button></td></tr>`).join('')}</table>
@@ -380,4 +397,58 @@ function showSaved() {
   });
 }
 
-boot();
+/* ======================= DIÁLOGOS (modo Lecciones) ======================= */
+function viewDialogs(c, p) {
+  c.innerHTML = `<h1>🎭 Diálogos</h1><p class="muted" style="margin-top:0">Juegos de rol con Zahra: ella dice su parte y tú respondes en voz alta. No necesitan clave de IA.</p>
+    ${LEVELS.map(l => `<h3 style="color:${l.color}">${l.id} · ${l.name}</h3>` + UNITS.filter(x => x.level === l.id).map(x => {
+      const unl = unitIndex(x.id) <= currentPos(p).ui;
+      return `<button class="list-item" data-dl="${x.id}" style="${unl ? '' : 'opacity:.55'}"><span class="ic">${unl ? x.icon : '🔒'}</span><span class="t"><b>${esc(x.dialogue.title)}</b><small>${esc(x.dialogue.scene)}</small></span>›</button>`; }).join('')).join('')}`;
+  $$('[data-dl]', c).forEach(b => b.onclick = () => startDialogue(UNITS.find(x => x.id === b.dataset.dl), { xp: 10 }));
+}
+
+/* ======================= FRASARIO ======================= */
+function showBook(book) {
+  const p = ensureTutor(P());
+  modal(`<h2>${book.icon} ${esc(book.title)}</h2><p class="muted">Toca 🔊 para escuchar, 🎤 para decirla y ⭐ para guardarla.</p>
+    <button class="btn" data-prac style="margin-bottom:12px">Practicar como lección (+10 XP)</button>
+    <div class="book">${book.items.map(([en, es], i) => `<div class="bk-row"><div class="bk-t"><b>${esc(en)}</b><small>${esc(es)}</small><div class="bk-res" id="bk${i}"></div></div>
+      <button class="mini-aud" data-say="${i}">🔊</button><button class="mini-aud mic-sm" data-mic="${i}">🎤</button><button class="star" data-star="${i}">${p.saved.some(x => x.en === en) ? '⭐' : '☆'}</button></div>`).join('')}</div>
+    <button class="btn ghost" data-close style="margin-top:12px">Cerrar</button>`, (m, close) => {
+    $$('[data-say]', m).forEach(b => b.onclick = () => Speech.speak(book.items[+b.dataset.say][0]));
+    $$('[data-star]', m).forEach(b => b.onclick = () => {
+      const [en, es] = book.items[+b.dataset.star];
+      const i = p.saved.findIndex(x => x.en === en);
+      if (i >= 0) { p.saved.splice(i, 1); b.textContent = '☆'; } else { p.saved.push({ en, es, from: 'frasario', d: dayKey() }); b.textContent = '⭐'; }
+      save();
+    });
+    $$('[data-mic]', m).forEach(b => b.onclick = () => {
+      const i = +b.dataset.mic, en = book.items[i][0], out = $('#bk' + i, m);
+      if (!Speech.supported()) { out.innerHTML = '<small>Tu navegador no reconoce voz. Usa Chrome.</small>'; return; }
+      b.classList.add('on'); out.innerHTML = '<small>Te escucho... 👂</small>';
+      Speech.listen({
+        onResult: alts => {
+          const r = Speech.evaluate(en, alts);
+          out.innerHTML = `<div class="target sm">${r.words.map(w => `<span class="w ${w.ok ? 'g' : 'r'}">${esc(w.w)}</span>`).join(' ')}</div><small><b>${r.score}%</b> · “${esc(r.heard)}”</small>`;
+          if (r.score >= 70) { sfxOk(); addXP(1); } else sfxBad();
+        },
+        onError: e => { out.innerHTML = '<small>' + micErrorText(e) + '</small>'; },
+        onEnd: () => b.classList.remove('on')
+      });
+    });
+    $('[data-prac]', m).onclick = () => { close(); startBookLesson(book); };
+    $('[data-close]', m).onclick = () => { close(); renderMain(); };
+  });
+}
+function startBookLesson(book) {
+  const items = book.items.map(([en, es]) => ({ en, es, key: null }));
+  const pick8 = shuffle(items).slice(0, 8), ex = [];
+  pick8.forEach((it, i) => {
+    const t = i % 4;
+    if (t === 0) ex.push(G.mcEnEs(it, items));
+    else if (t === 1) { const b = G.build(it, items); b.key = null; ex.push(b); }
+    else if (t === 2) ex.push(maybeSpeak(it, G.build(it, items, true)));
+    else ex.push(G.mcEsEn(it, items));
+  });
+  ex.forEach(e => e.key = null);
+  runLesson({ title: book.title, exercises: ex, xp: 10, onDone: acc => { const p = P(); p.books = p.books || {}; p.books[book.id] = Math.max(p.books[book.id] || 0, acc); save(); } });
+}

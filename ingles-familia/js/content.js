@@ -41,9 +41,9 @@ const UNITS = [
     ['See you tomorrow.','Nos vemos mañana.']
   ],
   dialogue: {
-    title: 'Conociendo a alguien', scene: 'Conoces a Emma en una reunión.',
+    title: 'Conociendo a alguien', scene: 'Conoces a Zahra en una reunión.',
     lines: [
-      { bot: 'Hi! My name is Emma. What is your name?', es: '¡Hola! Me llamo Emma. ¿Cómo te llamas?' },
+      { bot: 'Hi! My name is Zahra. What is your name?', es: '¡Hola! Me llamo Zahra. ¿Cómo te llamas?' },
       { you: 'Hello, my name is Ana.', es: 'Hola, mi nombre es Ana. (usa tu nombre si quieres)' },
       { bot: 'Nice to meet you! Where are you from?', es: '¡Mucho gusto! ¿De dónde eres?' },
       { you: "I'm from Venezuela.", es: 'Soy de Venezuela.' },
@@ -778,10 +778,16 @@ const SCENARIOS = [
   { id: 'cafe', icon: '☕', title: 'Pedir en un café', desc: 'Eres cliente', prompt: 'You are a barista in a coffee shop in Miami. The learner is a customer ordering.' },
   { id: 'airport', icon: '✈️', title: 'Aeropuerto y migración', desc: 'Control de inmigración', prompt: 'You are an immigration officer at Miami airport asking routine questions (purpose of visit, length of stay, hotel).' },
   { id: 'doctor', icon: '🩺', title: 'Visita al médico', desc: 'Explica síntomas', prompt: 'You are a friendly doctor. The learner is a patient describing symptoms.' },
-  { id: 'interview', icon: '💼', title: 'Entrevista de trabajo', desc: 'Practica respuestas', prompt: 'You are a hiring manager doing a job interview. Ask typical interview questions one at a time.' },
-  { id: 'supplier', icon: '📦', title: 'Negociar con proveedor', desc: 'Precios, entregas, garantías', prompt: 'You are a machinery supplier from China selling agricultural equipment (pellet mills, extruders). Negotiate price, lead time, shipping and warranty.' },
+  { id: 'interview', icon: '💼', title: 'Entrevista de trabajo', desc: 'Practica respuestas', scope: 'work', prompt: 'You are a hiring manager doing a job interview. Ask typical interview questions one at a time.' },
+  { id: 'supplier', icon: '📦', title: 'Negociar con proveedor', desc: 'Precios, entregas, garantías', scope: 'work', prompt: 'You are a machinery supplier from China selling agricultural equipment (pellet mills, extruders). Negotiate price, lead time, shipping and warranty.' },
   { id: 'school', icon: '🎒', title: 'En el colegio', desc: 'Para los chamos', prompt: 'You are a friendly classmate at an international school. Talk about classes, games, friends and hobbies. Keep it fun and age-appropriate.' },
-  { id: 'hotel', icon: '🏨', title: 'Check-in en hotel', desc: 'Reservas y problemas', prompt: 'You are a hotel receptionist. The learner is checking in and may have a problem with the room.' }
+  { id: 'hotel', icon: '🏨', title: 'Check-in en hotel', desc: 'Reservas y problemas', prompt: 'You are a hotel receptionist. The learner is checking in and may have a problem with the room.' },
+  { id: 'worktalk', icon: '🥂', title: 'Small talk de negocios', desc: 'Romper el hielo', scope: 'work', prompt: 'You are a business visitor meeting the learner at a trade fair. Make friendly professional small talk.' },
+  { id: 'meeting', icon: '📋', title: 'Reunión de trabajo', desc: 'Opinar y proponer', scope: 'work', prompt: 'You are a colleague leading a short project meeting. Ask the learner for updates, opinions and next steps.' },
+  { id: 'call', icon: '📞', title: 'Llamada de negocios', desc: 'Atender y llamar', scope: 'work', prompt: 'You are on a business phone call with the learner about an order. Practice phone phrases: greeting, purpose, confirming details, closing.' },
+  { id: 'customer', icon: '🧑‍💼', title: 'Atender a un cliente', desc: 'Ventas y reclamos', scope: 'work', prompt: 'You are a customer interested in buying agricultural machinery (or with a complaint about a delayed order). The learner is the seller.' },
+  { id: 'present', icon: '📊', title: 'Presentar un producto', desc: 'Vender una máquina', scope: 'work', prompt: 'You are a potential buyer listening to the learner present a product (a pellet mill or fish feed extruder). Ask questions about capacity, price, warranty and delivery.' },
+  { id: 'email', icon: '✉️', title: 'Redactar un correo', desc: 'Zahra te corrige', scope: 'work', prompt: 'Help the learner write short professional emails. Ask what they need to write, then react to their drafts and suggest a polished version in "correction".' }
 ];
 
 /* Prueba de ubicación: frases de referencia por nivel (se toman del curso) */

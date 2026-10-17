@@ -34,7 +34,7 @@ const P = () => DB.profiles.find(p => p.id === DB.current);
 
 function newProfile(name, avatar, goal) {
   return { id: uid(), name, avatar, goal, xp: 0, streak: 0, lastDay: '', days: {}, speak: {}, progress: {},
-    items: {}, sounds: {}, created: Date.now(), skipSpeakUntil: 0 };
+    items: {}, sounds: {}, created: Date.now(), skipSpeakUntil: 0, mode: 'duo', scope: 'daily' };
 }
 
 /* ---------------- curso: índices ---------------- */
@@ -147,27 +147,25 @@ const MASCOT = `<svg class="mascot" viewBox="0 0 170 160" aria-label="Tuki el tu
   <path d="M158 63 C162 66 164 70 164 74 C160 74 157 71 156 67Z" fill="#1d2433"/>
   <path d="M60 146 h12 M84 146 h12" stroke="#ff9f1c" stroke-width="5" stroke-linecap="round"/>
 </svg>`;
-const SKIN = '#f1c7a5', SKIN_D = '#d9a985';
-function avatarSVG(kind = 'emma') {
-  const isEmma = kind === 'emma';
-  const hair = isEmma ? '#5b3a29' : '#2b2b2b', shirt = isEmma ? '#12a594' : '#ff9f1c', bg = isEmma ? '#d8f3ee' : '#ffe9cc';
-  return `<svg class="avatar" viewBox="0 0 200 200" aria-label="Tutor">
-  <circle cx="100" cy="100" r="98" fill="${bg}"/>
-  ${isEmma ? `<path d="M44 112 C36 36 164 36 156 112 L160 168 L40 168Z" fill="${hair}"/>` : ''}
-  <rect x="86" y="140" width="28" height="26" fill="${SKIN_D}"/>
-  <path d="M34 200 C40 158 160 158 166 200Z" fill="${shirt}"/>
-  <ellipse cx="100" cy="106" rx="44" ry="51" fill="${SKIN}"/>
-  <ellipse cx="57" cy="110" rx="7" ry="11" fill="${SKIN_D}"/><ellipse cx="143" cy="110" rx="7" ry="11" fill="${SKIN_D}"/>
-  ${isEmma ? `<path d="M56 98 C58 52 142 48 147 98 C128 74 92 70 56 98Z" fill="${hair}"/>`
-           : `<path d="M57 92 C56 52 144 50 144 92 C132 72 100 66 57 92Z" fill="${hair}"/>`}
-  <path d="M74 94 q8 -6 16 0" stroke="${hair}" stroke-width="4" fill="none" stroke-linecap="round"/>
-  <path d="M110 94 q8 -6 16 0" stroke="${hair}" stroke-width="4" fill="none" stroke-linecap="round"/>
-  <circle cx="82" cy="107" r="5.5" fill="#222"/><circle cx="118" cy="107" r="5.5" fill="#222"/>
-  <circle cx="84" cy="105" r="1.6" fill="#fff"/><circle cx="120" cy="105" r="1.6" fill="#fff"/>
-  <g class="lids"><rect x="74" y="99" width="17" height="14" rx="6" fill="${SKIN}"/><rect x="110" y="99" width="17" height="14" rx="6" fill="${SKIN}"/></g>
-  <circle cx="72" cy="124" r="7" fill="#f4a3a3" opacity=".5"/><circle cx="128" cy="124" r="7" fill="#f4a3a3" opacity=".5"/>
-  <path d="M96 112 q4 10 0 12" stroke="${SKIN_D}" stroke-width="3" fill="none" stroke-linecap="round"/>
-  <ellipse class="mouth" cx="100" cy="135" rx="11" ry="5" fill="#a63d4a"/>
+/* Zahra: robot tutora (diseño original) */
+function avatarSVG() {
+  return `<svg class="avatar robot" viewBox="0 0 200 200" aria-label="Zahra">
+  <circle cx="100" cy="100" r="98" fill="#dff5f1"/>
+  <path d="M52 200 C54 160 146 160 148 200Z" fill="#12a594"/>
+  <path d="M88 186 l12 -10 l12 10" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/>
+  <rect x="86" y="138" width="28" height="22" rx="6" fill="#b9d3cf"/>
+  <line x1="100" y1="40" x2="100" y2="20" stroke="#5b6b82" stroke-width="5" stroke-linecap="round"/>
+  <circle class="ant" cx="100" cy="17" r="8" fill="#ff5d3a"/>
+  <rect x="30" y="80" width="18" height="42" rx="9" fill="#ff9f1c"/>
+  <rect x="152" y="80" width="18" height="42" rx="9" fill="#ff9f1c"/>
+  <path d="M39 82 C39 30 161 30 161 82" stroke="#ff9f1c" stroke-width="6" fill="none"/>
+  <rect x="42" y="38" width="116" height="106" rx="42" fill="#ffffff" stroke="#c9e4df" stroke-width="3"/>
+  <rect x="56" y="58" width="88" height="66" rx="27" fill="#1d2433"/>
+  <ellipse cx="82" cy="86" rx="9" ry="11" fill="#5ff0dc"/><ellipse cx="118" cy="86" rx="9" ry="11" fill="#5ff0dc"/>
+  <circle cx="85" cy="82" r="3" fill="#fff"/><circle cx="121" cy="82" r="3" fill="#fff"/>
+  <g class="lids"><rect x="70" y="72" width="24" height="27" fill="#1d2433"/><rect x="106" y="72" width="24" height="27" fill="#1d2433"/></g>
+  <rect class="mouth" x="88" y="105" width="24" height="7" rx="3.5" fill="#5ff0dc"/>
+  <circle cx="64" cy="113" r="5" fill="#ff7aa2" opacity=".8"/><circle cx="136" cy="113" r="5" fill="#ff7aa2" opacity=".8"/>
 </svg>`;
 }
 Speech.onTalk = on => $$('.avatar-wrap').forEach(w => w.classList.toggle('talking', on));
@@ -197,7 +195,8 @@ function renderWelcome() {
     <div class="card" style="text-align:left">
       <div class="row"><span style="font-size:26px">🎯</span><div><b>Por niveles</b><br><small class="muted">A1 → B2, 20 unidades y 120 lecciones</small></div></div><br>
       <div class="row"><span style="font-size:26px">🗣️</span><div><b>Hablas y te corrige</b><br><small class="muted">Pronunciación palabra por palabra</small></div></div><br>
-      <div class="row"><span style="font-size:26px">🤖</span><div><b>Tutor de IA opcional</b><br><small class="muted">Conversación libre por voz</small></div></div><br>
+      <div class="row"><span style="font-size:26px">🤖</span><div><b>Modo Zahra, tu robot tutora</b><br><small class="muted">Pregúntale cómo se dice algo, dilo y te corrige</small></div></div><br>
+      <div class="row"><span style="font-size:26px">📰</span><div><b>Inglés cotidiano y de trabajo</b><br><small class="muted">Frasario, conversaciones y noticias reales</small></div></div><br>
       <div class="row"><span style="font-size:26px">👨‍👩‍👧‍👦</span><div><b>Liga familiar</b><br><small class="muted">Compitan sanamente cada semana</small></div></div>
     </div>
     <button class="btn" id="go">Crear mi perfil</button>
@@ -209,7 +208,7 @@ function renderWelcome() {
 const AVATARS = ['👨🏻', '👩🏻', '👦🏻', '👧🏻', '🧔🏻', '👩🏽', '👨🏽', '👧🏽', '👦🏽', '👵🏻', '👴🏻', '🧑🏻'];
 const GOALS = [[20, 'Casual', '5 min'], [30, 'Normal', '10 min'], [50, 'Serio', '15 min'], [80, 'Intenso', '20 min']];
 function renderCreateProfile() {
-  let av = AVATARS[0], goal = 30;
+  let av = AVATARS[0], goal = 30, mode = 'duo';
   app.innerHTML = `<div class="screen"><div class="lesson-top"><button class="x" id="back">✕</button><h2 style="margin:0">Nuevo perfil</h2></div>
   <div class="scroll" style="padding-top:4px">
     <label class="lbl">¿Cómo te llamas?</label>
@@ -218,6 +217,8 @@ function renderCreateProfile() {
     <div class="grid-av" id="avs" style="margin:6px 0 16px">${AVATARS.map((a, i) => `<button data-a="${a}" class="${i ? '' : 'sel'}">${a}</button>`).join('')}</div>
     <label class="lbl">Meta diaria</label>
     <div class="seg" id="goals">${GOALS.map(([x, n, m]) => `<button data-g="${x}" class="${x === goal ? 'sel' : ''}">${n}<br><small>${m}</small></button>`).join('')}</div>
+    <label class="lbl">¿Cómo quieres aprender? (puedes cambiarlo cuando quieras)</label>
+    <div class="seg" id="modes"><button data-m="duo" class="sel">⭐ Lecciones<br><small>paso a paso, tipo Duolingo</small></button><button data-m="zahra">🤖 Zahra<br><small>chat con robot, tipo Learna</small></button></div>
     <label class="lbl">¿Ya sabes algo de inglés?</label>
     <button class="btn" id="zero" style="margin-top:8px">Empiezo desde cero</button>
     <button class="btn sun" id="test">Hacer prueba de nivel (3 min)</button>
@@ -225,12 +226,13 @@ function renderCreateProfile() {
   $('#back').onclick = () => DB.profiles.length ? renderMain() : renderWelcome();
   $$('#avs button').forEach(b => b.onclick = () => { $$('#avs button').forEach(x => x.classList.remove('sel')); b.classList.add('sel'); av = b.dataset.a; });
   $$('#goals button').forEach(b => b.onclick = () => { $$('#goals button').forEach(x => x.classList.remove('sel')); b.classList.add('sel'); goal = +b.dataset.g; });
+  $$('#modes button').forEach(b => b.onclick = () => { $$('#modes button').forEach(x => x.classList.remove('sel')); b.classList.add('sel'); mode = b.dataset.m; });
   const create = () => {
     const name = $('#nm').value.trim();
     if (!name) { toast('Escribe tu nombre 🙂'); $('#nm').focus(); return null; }
-    const p = newProfile(name, av, goal); DB.profiles.push(p); DB.current = p.id; save(); return p;
+    const p = newProfile(name, av, goal); p.mode = mode; DB.profiles.push(p); DB.current = p.id; save(); TAB = mode === 'zahra' ? 'zahra' : 'learn'; return p;
   };
-  $('#zero').onclick = () => { if (create()) { TAB = 'learn'; renderMain(); toast('¡Bienvenido! Toca la primera lección ⭐'); } };
+  $('#zero').onclick = () => { if (create()) { renderMain(); toast(mode === 'zahra' ? '¡Hola! Pregúntale lo que quieras a Zahra 🤖' : '¡Bienvenido! Toca la primera lección ⭐'); } };
   $('#test').onclick = () => { if (create()) startPlacement(); };
 }
 
@@ -241,24 +243,36 @@ function ringSVG(frac) {
   <circle cx="17" cy="17" r="${r}" fill="none" stroke="${f >= 1 ? 'var(--ok)' : 'var(--sun)'}" stroke-width="4" stroke-linecap="round"
    stroke-dasharray="${c * f} ${c}" transform="rotate(-90 17 17)"/><text x="17" y="21" text-anchor="middle" font-size="11" font-weight="900" fill="var(--ink)">${f >= 1 ? '✓' : Math.round(f * 100)}</text></svg>`;
 }
+const MODE_TABS = {
+  duo: [['learn', '🏠', 'Aprender'], ['sounds', '👄', 'Pronuncia'], ['dialogs', '🎭', 'Diálogos'], ['family', '🏆', 'Familia'], ['me', '⚙️', 'Perfil']],
+  zahra: [['zahra', '🤖', 'Zahra'], ['classes', '📚', 'Clases'], ['news', '📰', 'Noticias'], ['family', '🏆', 'Familia'], ['me', '⚙️', 'Perfil']]
+};
+const VIEWS = () => ({ learn: viewLearn, sounds: viewSounds, dialogs: viewDialogs, family: viewFamily, me: viewMe,
+  zahra: viewZahra, classes: viewTutor, news: viewNews });
+function setMode(m) { const p = P(); p.mode = m; save(); TAB = MODE_TABS[m][0][0]; Speech.stop(); if (window.speechSynthesis) speechSynthesis.cancel(); renderMain(); }
 function renderMain() {
   const p = P(); if (!p) return renderWelcome();
-  const tabs = [['learn', '🏠', 'Aprender'], ['sounds', '👄', 'Pronuncia'], ['talk', '💬', 'Tutor'], ['family', '🏆', 'Familia'], ['me', '⚙️', 'Perfil']];
-  app.innerHTML = `<div class="screen">
+  const mode = p.mode === 'zahra' ? 'zahra' : 'duo';
+  const tabs = MODE_TABS[mode];
+  if (!tabs.some(t => t[0] === TAB)) TAB = tabs[0][0];
+  const full = TAB === 'zahra';
+  app.innerHTML = `<div class="screen ${full ? 'fullh' : ''}">
     <div class="topbar">
       <button class="who" id="who"><span class="av">${p.avatar}</span>${esc(p.name)}</button>
       <div class="spacer"></div>
       <span class="stat fire" title="Racha">🔥 ${liveStreak(p)}</span>
       <span class="stat xp" title="XP">⭐ ${p.xp}</span>
       <span title="Meta diaria">${ringSVG(todayXP(p) / p.goal)}</span>
+      <div class="modebar"><button data-m="duo" class="${mode === 'duo' ? 'on' : ''}">⭐ Modo Lecciones</button><button data-m="zahra" class="${mode === 'zahra' ? 'on' : ''}">🤖 Modo Zahra</button></div>
     </div>
-    <div class="scroll" id="content"></div>
-    <nav class="nav">${tabs.map(([k, i, l]) => `<button data-t="${k}" class="${TAB === k ? 'on' : ''}"><span class="i">${i}</span>${l}</button>`).join('')}</nav>
+    ${full ? '<div class="zwrap" id="content"></div>' : '<div class="scroll" id="content"></div>'}
+    <nav class="nav ${full ? 'static' : ''}">${tabs.map(([k, i, l]) => `<button data-t="${k}" class="${TAB === k ? 'on' : ''}"><span class="i">${i}</span>${l}</button>`).join('')}</nav>
   </div>`;
   $('#who').onclick = () => { TAB = 'family'; renderMain(); };
-  $$('.nav button').forEach(b => b.onclick = () => { TAB = b.dataset.t; renderMain(); });
+  $$('.modebar button').forEach(b => b.onclick = () => { if (b.dataset.m !== mode) setMode(b.dataset.m); });
+  $$('.nav button').forEach(b => b.onclick = () => { Speech.stop(); TAB = b.dataset.t; renderMain(); });
   const c = $('#content');
-  ({ learn: viewLearn, sounds: viewSounds, talk: viewTutor, family: viewFamily, me: viewMe })[TAB](c, p);
+  VIEWS()[TAB](c, p);
 }
 
 /* ---------- Aprender (ruta) ---------- */
@@ -772,7 +786,7 @@ function startDialogue(u, { onDone, xp = 15 } = {}) {
     <div class="lesson-top"><button class="x" id="quit">✕</button><div class="pbar"><div id="pb" style="width:0%"></div></div></div>
     <div class="scroll" style="padding-bottom:20px" id="dlg">
       <div class="center"><div class="tag" style="color:var(--purple);font-weight:900;font-size:12px;letter-spacing:.08em">JUEGO DE ROL · ${u.level}</div><h2>${esc(d.title)}</h2><p class="muted" style="margin-top:0">${esc(d.scene)}</p></div>
-      <div class="avatar-wrap">${avatarSVG('emma')}</div><div class="center muted" style="font-weight:800">Emma</div>
+      <div class="avatar-wrap">${avatarSVG()}</div><div class="center muted" style="font-weight:800">Zahra 🤖</div>
       <div id="stage"></div>
     </div><div class="footer" id="foot"><button class="btn" id="cont">Empezar</button></div></div>`;
   $('#quit').onclick = () => { Speech.stop(); renderMain(); };
@@ -1006,7 +1020,7 @@ function viewMe(c, p) {
       <div class="row"><button class="btn ghost small" id="exp">Descargar respaldo</button><button class="btn ghost small" id="imp">Restaurar</button></div></div>
 
     <div class="card"><h3>🗑️ Zona de cuidado</h3><button class="btn bad small" id="del">Borrar el perfil de ${esc(p.name)}</button></div>
-    <p class="center muted" style="font-size:12px">Inglés en Familia · uso personal · v1.1</p>`;
+    <p class="center muted" style="font-size:12px">Inglés en Familia · uso personal · v1.2</p>`;
   $$('#goals button', c).forEach(b => b.onclick = () => { p.goal = +b.dataset.g; save(); renderMain(); });
   $('#voice', c).onchange = e => { s.voice = e.target.value; save(); applyTheme(); Speech.speak('Hello! Nice to meet you.'); };
   $$('#rate button', c).forEach(b => b.onclick = () => { s.rate = +b.dataset.r; save(); applyTheme(); renderMain(); Speech.speak('This is my speaking speed.'); });
